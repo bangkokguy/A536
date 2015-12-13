@@ -1,0 +1,97 @@
+1) Backup!
+==========================
+Check free spaces on internal card. Youn need 2,5 GB minimum space!  
+Call the "engineering mode" (dialpad) - *#*#3646633#*#*
+Go "Log and Debugging" menu.
+Choose "User2Root".
+Choose "Root". Now You are in "temporary root". (Until next switch Off/On) 
+Switch off and ON "USB debugging".
+Connect phone to computer with usb interface.
+Open the "Terminal" window on your computer.
+Type (or copy, paste) these commands:
+
+	adb shell
+	su -
+	dd if=/dev/preloader of=/data/local/tmp/preloader.img
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/mbr.img bs=1024 count=512 skip=0
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/ebr1.img bs=1024 count=512 skip=512
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/pro_info.img bs=1024 count=3072 skip=1024
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/nvram.img bs=1024 count=5120 skip=4096
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/protect_f.img bs=1024 count=10240 skip=9216
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/protect_s.img bs=1024 count=10240 skip=19456
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/seccfg.img bs=1024 count=128 skip=29696
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/uboot.img bs=1024 count=384 skip=29824
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/bootimg.img bs=1024 count=16384 skip=30208
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/recovery.img bs=1024 count=16384 skip=46592
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/sec_ro.img bs=1024 count=6144 skip=62976
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/misc.img bs=1024 count=512 skip=69120
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/logo.img bs=1024 count=3072 skip=69632
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/expdb.img bs=1024 count=10240 skip=72704
+	dd if=/dev/block/mmcblk0 of=/data/local/tmp/android.img bs=1024 count=2097152 skip=82944
+	exit
+	exit
+
+Now, you have backup img's on your phone internal card.
+Open "Terminal" window again.
+Create backp directory: md dd-backup  
+Change current directory: cd dd-backup
+Save backups to your computer: adb pull /data/local/tmp/
+(it will take a long tíme, system partion is 2 GB!!)
+
+
+2) Switch off "recovery.img" recovery script
+====================================================
+(The Wicked patch :)
+
+Rename two files:
+	/system/recovery-from-boot.p
+	/system/etc/install-recovery.sh
+
+Open the "Terminal" window on your computer.
+Type (or copy, paste) these commands:
+
+	adb shell
+	su -
+	mount -o rw,remount /system
+	mv /system/recovery-from-boot.p /system/recovery-from-boot.p.bck
+	mv /system/etc/install-recovery.sh /system/etc/install-recovery.sh.bck
+	exit
+
+
+3) Copy supersu.apk to phone
+==================================
+adb push UPDATE-SuperSU-v2.14.zip /storage/sdcard1/
+
+
+4) Create own CWM or TWRP recovery image.
+===========================================
+http://logout.hu/bejegyzes/cappa72/csinald_magad_akcio_cwm_gyartasra_mtk657x.html
+https://github.com/bgcngm/mtk-tools
+
+or used this 
+
+
+5) "Flash" your img.
+=================================
+
+Copy img to phone: adb push twrp-a536.img /storage/sdcard1/
+
+	adb shell
+	su -
+	dd if=/storage/sdcard1/twrp-a536.img of=/dev/recovery
+
+
+6) Reboot new recovery
+==================================
+Switch off phone.
+Push V+ & V- & Power.
+Voila!! 
+Install UPDATE-SuperSU-v2.14.zip.
+
+Have níce rooootttiiing!
+
+
+
+
+
+
